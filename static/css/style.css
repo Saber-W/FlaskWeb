@@ -1,0 +1,265 @@
+body {
+	background-color: #6464ac;
+}
+
+table {
+	border-collapse: collapse;
+	box-sizing: border-box;
+}
+
+.main-stage {
+	margin-top: 40px;
+	border-style: none;
+	padding: 0px;
+	width: 1000px;
+	height: 300px;
+	background-color: #ececec;
+	margin-left: 300px;
+	overflow: hidden;
+	border-radius: 5px 5px 5px 5px;
+}
+
+.inferior-stage {
+	overflow: hidden;
+}
+
+.text-title {
+	font-family: Arial, Verdana, Sans-serif;
+	font-weight: 550;
+	font-size: 35px;
+	margin-top: 70px;
+	margin-left: 380px;
+}
+
+.text-search {
+	font-family: Arial, Verdana, Sans-serif;
+	font-weight: lighter;
+	margin-left: 310px;
+	padding-top: 30px;
+	height: 21px;
+	width: 200px;
+	display: inline;
+}
+
+.star {
+	padding-top: 30px;
+	height: 21px;
+	width: 21px;
+	display: inline;
+	color: red;
+}
+
+#text-input {
+	height: 25px;
+	padding: 0;
+	margin-top: 30px;
+	margin-left: 15px;
+	border-style: none;
+	outline: none;
+	border-radius: 5px 5px 5px 5px;
+}
+
+.button-area {
+	padding-top: 40px;
+	margin-left: 370px;
+}
+
+.main-button {
+	width: 115px;
+	height: 30px;
+	font-size: 16px;
+	border-style: none;
+	outline: none;
+	background-color: white;
+	border-radius: 5px 5px 5px 5px;
+}
+
+.spacing-area {
+	display: inline;
+	margin-left: 40px;
+}
+
+.main-button:hover {
+	background-color: #c4c4c4;
+}
+
+.dividing-line {
+	width: 1000px;
+	height: 2px;
+	background-color: #ececec;
+	margin-top: 15px;
+	margin-left: 300px;
+}
+
+.button-tab-area {
+	width: 1000px;
+	height: 50px;
+	margin-top: 15px;
+	margin-left: 300px;
+	background-color: #f3f3f3;
+}
+
+.button-tab {
+	font-size: 17px;
+	font-weight: lighter;
+	height: 50px;
+	background-color: #f3f3f3;
+	padding-left: 15px;
+	padding-right: 15px;
+	border-style: none;
+	outline: none;
+	margin: 0;
+	border-style: none;
+}
+
+.button-tab:hover {
+	background-color: #c4c4c4 !important;
+	cursor: pointer;
+}
+
+#company-outlook {
+	width: 1000px;
+	margin-top: 25px;
+	margin-left: 300px;
+	background-color: #f3f3f3;
+}
+
+#stock-summary {
+	width: 1000px;
+	margin-top: 25px;
+	margin-left: 300px;
+	background-color: #f3f3f3;
+}
+
+#container {
+	width: 1000px;
+	height: 400px;
+	margin-top: 25px;
+	margin-left: 300px;
+}
+
+#latest-news {
+	width: 1000px;
+	margin-top: 25px;
+	margin-left: 300px;
+}
+
+.company-outlook-col1 {
+	width: 300px;
+	height: 30px;
+	font-family: Arial, Verdana, Sans-serif;
+	font-weight: bold;
+	font-size: 17px;
+	background-color: #bcbcb8;
+	border-right: 1px solid gray; 
+  	border-bottom: 1px solid gray; 
+}
+
+.company-outlook-col2 {
+	width: 700px;
+	height: 30px;
+	text-align: center;
+	font-family: Arial, Verdana, Sans-serif;
+	font-size: 17px;
+  	border-bottom: 1px solid gray; 
+}
+
+.company-outlook-col1-last {
+	width: 300px;
+	font-family: Arial, Verdana, Sans-serif;
+	font-weight: bold;
+	font-size: 17px;
+	background-color: #bcbcb8;
+	border-right: 1px solid gray; 
+}
+
+.company-outlook-col2-last {
+	width: 700px;
+	font-family: Arial, Verdana, Sans-serif;
+	font-size: 17px;
+	text-align: center;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    overflow: hidden;
+    visibility: visible;
+    text-overflow: ellipsis;
+}
+
+.company-outlook-col1-last2 {
+	width: 300px;
+	height: 30px;
+	font-family: Arial, Verdana, Sans-serif;
+	font-weight: bold;
+	font-size: 17px;
+	background-color: #bcbcb8;
+	border-right: 1px solid gray; 
+}
+
+.company-outlook-col2-last2 {
+	width: 700px;
+	height: 30px;
+	font-family: Arial, Verdana, Sans-serif;
+	font-size: 17px;
+	text-align: center;
+}
+
+.news-stage1 {
+	width: 1000px;
+	height: 150px;
+	background-color: #f3f3f3;
+	overflow: hidden;
+}
+
+.news-stage2 {
+	width: 1000px;
+	height: 150px;
+	background-color: #f3f3f3;
+	margin-top: 20px;
+	overflow: hidden;
+}
+
+.news-img {
+	width: 120px;
+	height: 120px;
+	display: inline-block;
+	margin: 15px;
+	border-style: none;
+	padding: 0;
+}
+
+.news-other {
+	vertical-align: top;
+	display: inline-block;
+	margin: 15px, 0, 0, 0;
+	border-style: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+.news-title {
+	font-family: Arial, Verdana, Sans-serif;
+	font-weight: bold;
+	font-size: 17px;
+	max-width: 800px;
+	max-height: 120px;
+	margin-top: 15px;
+}
+
+.news-date {
+	font-family: Arial, Verdana, Sans-serif;
+	margin-top: 3px;
+}
+
+.news-link {
+	font-family: Arial, Verdana, Sans-serif;
+	margin-top: 3px;
+}
+
+#result-error {
+	margin-top: 40px;
+	margin-left: 500px;
+	font-family: Arial, Verdana, Sans-serif;
+	font-weight: bolder;
+	font-size: 20px;
+}

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Stock Search</title>
+		<link rel="stylesheet" type="text/css" href="../static/css/style.css">
+		<script src="https://code.highcharts.com/stock/highstock.js"></script>
+		<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+		<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+		<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+		<script type="text/javascript">
+			var resultText, companyData, stockData, chartData, newsData;
+      var stockTicker;
+
+      function check() {
+        document.querySelector('#text-input').reportValidity();
+      }
+
+			function sendData(symbol) {
+        if (symbol.length==0) {
+        } else {
+    			var request = new XMLHttpRequest();
+          stockTicker = symbol.toUpperCase();
+    			request.open('GET', '/data/' + symbol, true);
+    			request.send();
+    			request.onreadystatechange = function () {
+    				if (request.readyState == 4 && request.status == 200) {
+              resultText = JSON.parse(request.responseText);
+              if (resultText[0] == "fail") {
+                document.getElementById("results").style.display = "none";
+                document.getElementById("result-error").style.display = "";
+              }
+    					else {
+                document.getElementById("result-error").style.display = "none";
+                document.getElementById("results").style.display = "";
+                companyData = resultText[0].company;
+                stockData = resultText[1].stock;
+                chartData = resultText[2].chart;
+                newsData = resultText[3].news;
+                showCompany();
+              }
+    				}
+    			}
+        }
+			}
+
+			function clearAll() {
+				document.getElementById("text-input").value = '';
+				document.getElementById("results").style.display = "none";
+				document.getElementById("result-error").style.display = "none";
+        // resultText = null;
+        // companyData = null;
+        // stockData = null;
+        // chartData = null;
+        // newsData = null;
+			}
+
+      function showCompany() {
+        document.getElementById("button-company").style.backgroundColor = "#bcbcb8";
+        document.getElementById("button-stock").style.backgroundColor = "#f3f3f3";
+        document.getElementById("button-chart").style.backgroundColor = "#f3f3f3";
+        document.getElementById("button-news").style.backgroundColor = "#f3f3f3";
+        document.getElementById("container").style.display = "none";
+        document.getElementById("stock-summary").style.display = "none";
+        document.getElementById("latest-news").style.display = "none";
+        document.getElementById("company-outlook").style.display = "";
+
+        document.getElementById("company-name").innerHTML = companyData.name;
+        document.getElementById("stock-ticker-symbol").innerHTML = companyData.ticker;
+        document.getElementById("stock-exchange-code").innerHTML = companyData.exchangeCode;
+        document.getElementById("company-start-date").innerHTML = companyData.startDate;
+        var newDescription
+        document.getElementById("description").innerHTML = companyData.description;
+      }
+
+      function showStock() {
+        document.getElementById("button-stock").style.backgroundColor = "#bcbcb8";
+        document.getElementById("button-company").style.backgroundColor = "#f3f3f3";
+        document.getElementById("button-chart").style.backgroundColor = "#f3f3f3";
+        document.getElementById("button-news").style.backgroundColor = "#f3f3f3";
+        document.getElementById("container").style.display = "none";
+        document.getElementById("company-outlook").style.display = "none";
+        document.getElementById("latest-news").style.display = "none";
+        document.getElementById("stock-summary").style.display = "";
+
+        document.getElementById("stock-ticker-symbol2").innerHTML = companyData.ticker;
+        document.getElementById("trading-day").innerHTML = stockData[0].timestamp.substring(0, 10);
+        document.getElementById("previous-closing-price").innerHTML = stockData[0].prevClose;
+        document.getElementById("opening-price").innerHTML = stockData[0].open;
+        document.getElementById("high-price").innerHTML = stockData[0].high;
+        document.getElementById("low-price").innerHTML = stockData[0].low;
+        document.getElementById("last-price").innerHTML = stockData[0].last;
+        if (stockData[0].last - stockData[0].prevClose < 0) {
+          document.getElementById("change").innerHTML = (stockData[0].last - stockData[0].prevClose).toFixed(2) + "  <img src=\'https://csci571.com/hw/hw6/images/RedArrowDown.jpg\' width=\'20\' height=\'20\'>";
+          document.getElementById("change-percent").innerHTML = ((stockData[0].last - stockData[0].prevClose) / stockData[0].prevClose * 100).toFixed(2)  + "%  <img src=\'https://csci571.com/hw/hw6/images/RedArrowDown.jpg\' width=\'20\' height=\'20\'>";
+        } else {
+          document.getElementById("change").innerHTML = (stockData[0].last - stockData[0].prevClose).toFixed(2) + "  <img src=\'https://csci571.com/hw/hw6/images/GreenArrowUp.jpg\' width=\'20\' height=\'20\'>";
+          document.getElementById("change-percent").innerHTML = ((stockData[0].last - stockData[0].prevClose) / stockData[0].prevClose * 100).toFixed(2)  + "%  <img src=\'https://csci571.com/hw/hw6/images/GreenArrowUp.jpg\' width=\'20\' height=\'20\'>";
+        }
+        document.getElementById("number-of-shares-trade").innerHTML = stockData[0].volume;
+      }
+
+			function showChart() {
+        document.getElementById("button-chart").style.backgroundColor = "#bcbcb8";
+        document.getElementById("button-stock").style.backgroundColor = "#f3f3f3";
+        document.getElementById("button-company").style.backgroundColor = "#f3f3f3";
+        document.getElementById("button-news").style.backgroundColor = "#f3f3f3";
+        document.getElementById("company-outlook").style.display = "none";
+        document.getElementById("stock-summary").style.display = "none";
+        document.getElementById("latest-news").style.display = "none";
+        document.getElementById("container").style.display = "";
+  			
+        // split the data set into ohlc and volume
+  			var price = [], volume = [];
+        var today = new Date();
+				for (i = 0; i < chartData.length; i += 1) {
+    			price.push(:[chartData[i][0], chartData[i][1]]);
+    			volume.push([chartData[i][0], chartData[i][2]]);
+    		}
+  				
+  			Highcharts.stockChart('container', {
+  				title: {
+  					text: 'Stock Price ' + stockTicker + " " + today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(),
+  				},
+
+  				subtitle: {
+            useHTML: true,
+            text: '<a href="https://api.tiingo.com/" style="text-decoration:underline" target="_blank">Source: Tiingo</a>'
+  				},
+
+  				yAxis: [{
+  					title: {
+  			   		text: 'Stock Price'
+  					},
+  					opposite: false,
+  				}, {
+  					title: {
+  						text: 'Volume'
+						},
+  					labels: {
+  						formatter: function () {
+              				var label;
+              				if (this.value == 0) label = 0;
+              				else label = this.value / 1000 + "k";
+            					return label;
+          				},
+  					},
+  					tickInterval: 100000,
+  				}],
+
+  					rangeSelector: {
+  					buttons: [{
+  						type: 'day',
+  						count: 7,
+  						text: '7d'
+  					}, {
+							type: 'day',
+  						count: 15,
+  						text: '15d'
+  					}, {
+  						type: 'month',
+  						count: 1,
+							text: '1m'
+  					}, {
+  						type: 'month',
+  						count: 3,
+  						text: '3m'
+  					}, {
+							type: 'month',
+  						count: 6,
+  						text: '6m'
+  					}],
+  					inputEnabled: false
+					},
+
+  				plotOptions: {
+      				series: {
+          				pointWidth: 2
+      				}
+  				},
+
+  				series: [{
+  					name: '',
+  					type: 'area',
+  					data: price,
+						yAxis: 0,
+            pointPlacement: 'on',
+  				}, {
+  					name: '',
+  					type: 'column',
+						data: volume,
+  					yAxis: 1,
+            pointPlacement: 'on',
+  				}]
+  			});
+		  }
+
+      function showNews() {
+        document.getElementById("button-news").style.backgroundColor = "#bcbcb8";
+        document.getElementById("button-stock").style.backgroundColor = "#f3f3f3";
+        document.getElementById("button-chart").style.backgroundColor = "#f3f3f3";
+        document.getElementById("button-company").style.backgroundColor = "#f3f3f3";
+        document.getElementById("container").style.display = "none";
+        document.getElementById("company-outlook").style.display = "none";
+        document.getElementById("stock-summary").style.display = "none";
+        document.getElementById("latest-news").style.display = "";
+
+        var i;
+        for (i = 0; i < 5; i+=1) {
+          document.getElementById("article-img" + String(i + 1)).innerHTML = "<img src=\'" + newsData[i][2] + "\' width=\'120\' height=\'120\'>";
+          document.getElementById("article-title" + String(i + 1)).innerHTML = newsData[i][0];
+          document.getElementById("article-date" + String(i + 1)).innerHTML = "Published Date: " + newsData[i][3].substring(0, 4) + "/" + newsData[i][3].substring(5, 7) + "/" + newsData[i][3].substring(8, 10);
+          document.getElementById("article-link" + String(i + 1)).innerHTML = "<a href=\'" + newsData[i][1] + "\' target=\'_blank\'>See Original Post</a>";
+        }
+      }
+		</script>
+	</head>
+
+	<body>
+		<div class="main-stage">
+			<div class="text-title">Stock Search</div>
+			<div class="inferior-stage">
+				<div class="text-search">Enter Stock Ticker Symbol </div>
+        <div class="star">*   </div>
+				<input type="text" id="text-input" required="required">
+        <div class="button-area">
+          <button class="main-button" onclick="check();sendData(document.getElementById('text-input').value);">Search</button>
+          <div class="spacing-area"></div>
+          <button class="main-button" onclick="clearAll()">Clear</button> 
+        </div>
+			</div>
+		</div>
+
+    <div class="dividing-line"></div>
+
+		<div id="results" style="display: none">
+			<div class="button-tab-area">
+				<button onclick="showCompany()" class="button-tab" id="button-company">Company Outlook</button><button onclick="showStock()" class="button-tab" id="button-stock">Stock Summary</button><button onclick="showChart()" class="button-tab" id="button-chart">Charts</button><button onclick="showNews()" class="button-tab" id="button-news">Latest News</button>
+			</div>
+			<div id="company-outlook" style="display: none">
+				<table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td class="company-outlook-col1">Company Name</td>
+            <td id="company-name" class="company-outlook-col2"></td>
+          </tr>
+          <tr>
+            <td class="company-outlook-col1">Stock Ticker Symbol</td>
+            <td id="stock-ticker-symbol" class="company-outlook-col2"></td>
+          </tr>
+          <tr>
+            <td class="company-outlook-col1">Stock Exchange Code</td>
+            <td id="stock-exchange-code" class="company-outlook-col2"></td>
+          </tr>
+          <tr>
+            <td class="company-outlook-col1">Company Start Date</td>
+            <td id="company-start-date" class="company-outlook-col2"></td>
+          </tr>
+          <tr>
+            <td class="company-outlook-col1-last">Description</td>
+            <td id="description" class="company-outlook-col2-last"></td>
+          </tr>
+        </table>
+			</div>
+			<div id="stock-summary" style="display: none">
+				<table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td class="company-outlook-col1">Stock Ticker Symbol</td>
+            <td id="stock-ticker-symbol2" class="company-outlook-col2"></td>
+          </tr>
+          <tr>
+            <td class="company-outlook-col1">Trading Day</td>
+            <td id="trading-day" class="company-outlook-col2"></td>
+          </tr>
+          <tr>
+            <td class="company-outlook-col1">Previous Closing Price</td>
+            <td id="previous-closing-price" class="company-outlook-col2"></td>
+          </tr>
+          <tr>
+            <td class="company-outlook-col1">Opening Price</td>
+            <td id="opening-price" class="company-outlook-col2"></td>
+          </tr>
+          <tr>
+            <td class="company-outlook-col1">High Price</td>
+            <td id="high-price" class="company-outlook-col2"></td>
+          </tr>
+          <tr>
+            <td class="company-outlook-col1">Low Price</td>
+            <td id="low-price" class="company-outlook-col2"></td>
+          </tr>
+          <tr>
+            <td class="company-outlook-col1">Last Price</td>
+            <td id="last-price" class="company-outlook-col2"></td>
+          </tr>
+          <tr>
+            <td class="company-outlook-col1">Change</td>
+            <td id="change" class="company-outlook-col2"></td>
+          </tr>
+          <tr>
+            <td class="company-outlook-col1">Change Percent</td>
+            <td id="change-percent" class="company-outlook-col2"></td>
+          </tr>
+          <tr>
+            <td class="company-outlook-col1-last2">Number of Shares Trade</td>
+            <td id="number-of-shares-trade" class="company-outlook-col2-last2"></td>
+          </tr>
+        </table>
+			</div>
+			<div id="container" style="display: none">
+			</div>
+      <div id="latest-news" style="display: none">
+        <div class="news-stage1">
+          <div class="news-img" id="article-img1"><img src="https://cdn.vox-cdn.com/thumbor/XNdtOoa9m4kMvvtnwZJMuv4NmhQ=/0x208:2656x1599/fit-in/1200x630/cdn.vox-cdn.com/uploads/chorus_asset/file/21847595/Screen_Shot_2020_09_02_at_1.53.42_PM.png" width="120" height="120"></div>
+          <div class="news-other">
+            <div class="news-title" id="article-title1">Amazon’s new indoor and outdoor Blink cameras can record for up to four years on one set of batteries</div>
+            <div class="news-date" id="article-date1">Published Date: 2020/09/0</div>
+            <div class="news-link" id="article-link1"><a href="https://www.theverge.com/2020/9/2/21418648/amazon-blink-indoor-outdoor-home-cameras-announced-price">See Original Post</a></div>
+          </div>
+        </div>
+        <div class="news-stage2">
+          <div class="news-img" id="article-img2"></div>
+          <div class="news-other">
+            <div class="news-title" id="article-title2"></div>
+            <div class="news-date" id="article-date2"></div>
+            <div class="news-link" id="article-link2"></div>            
+          </div>
+        </div>
+        <div class="news-stage2">
+          <div class="news-img" id="article-img3"></div>
+          <div class="news-other">
+            <div class="news-title" id="article-title3"></div>
+            <div class="news-date" id="article-date3"></div>
+            <div class="news-link" id="article-link3"></div>            
+          </div>
+        </div>
+        <div class="news-stage2">
+          <div class="news-img" id="article-img4"></div>
+          <div class="news-other">
+            <div class="news-title" id="article-title4"></div>
+            <div class="news-date" id="article-date4"></div>
+            <div class="news-link" id="article-link4"></div>
+          </div>
+        </div>
+        <div class="news-stage2">
+          <div class="news-img" id="article-img5"></div>
+          <div class="news-other">
+            <div class="news-title" id="article-title5"></div>
+            <div class="news-date" id="article-date5"></div>
+            <div class="news-link" id="article-link5"></div>            
+          </div>
+        </div>
+      </div>
+		</div>
+
+		<div id="result-error" style="display: none;">Error: No record has been found, please enter a valid symbol.</div>
+	</body>
+</html>
